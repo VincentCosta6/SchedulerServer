@@ -14,6 +14,18 @@ let userSchema = mongoose.Schema({
 		type: String,
 		require: true
 	},
+	First: {
+		type: String,
+		default: "NULL"
+	},
+	Last: {
+		type: String,
+		default: "NULL"
+	},
+	Phone: {
+		type: String,
+		default: "NULL"
+	},
 	permission:{
 		type: String,
 		require:true

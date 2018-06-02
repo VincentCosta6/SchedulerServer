@@ -4,4 +4,8 @@ $(document).ready(function() {
       window.location = data.redirect;
     });
   });
+
+  $("#profile").click( () => {
+    window.location = "/account";
+  });
 });

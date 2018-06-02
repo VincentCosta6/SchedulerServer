@@ -1,8 +1,25 @@
 <html>
   <head>
-
+    <link rel="stylesheet" href="css/login.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
-    <h1>Finish your signup</h1>
+    <div id = "main" class = "login-page">
+      <h1 class = "Title">Finish your signup</h1>
+      <form id = "finish" class="form">
+        <label >Profile picture: </label>
+        <input type = "file"></input>
+
+        <input id = "First" type="text" placeholder="First Name"/>
+        <input id = "Last" type="text" placeholder="Last Name"/>
+
+        <input id = "Phone" type="tel" placeholder="Phone Number"/>
+
+        <button id = "submit" type = "button" val = "Submit">Submit</button>
+        <label id = "error1">An error occured</label>
+      </form>
+    </div>
+    <script src="js/finish.js"></script>
   </body>
 </html>

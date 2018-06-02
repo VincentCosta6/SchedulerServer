@@ -4,7 +4,7 @@ let express = require("express"),
 let router = express.Router();
 
 let viewHTML = "Views/HTML/"
-let dirs = ["session", "finish"];
+let dirs = ["session", "finish", "account"];
 
 
 for(let i in dirs)
@@ -12,11 +12,44 @@ for(let i in dirs)
     return res.sendFile(path.resolve(__dirname, viewHTML + dirs[i] + ".html"));
   });
 
+router.get("/accountInfo", function(req, res) {
+  m.getUsers().findOne({username: req.session_state.user.username}, (err, user) => {
+    if(err) return m.errorCheck(err);
+
+    let ret = {
+      username: user.username,
+      email: user.email,
+      First: user.First,
+      Last: user.Last,
+      Phone: user.Phone,
+      permission: user.permission
+    };
+    return res.json({user: ret});
+  })
+});
+
 router.post("/logout", function(req, res) {
   m.getUsers().updateOne({username: req.session_state.user.username}, {$pull: {sessionKeys: req.session_state.sessionKey}}, (err) => {
     if(err) return m.errorCheck(err);
     req.session_state.reset();
     return res.json({redirect: "/login"});
+  });
+
+});
+
+router.post("/finishAccount", function(req, res) {
+  if(!req.body.first || req.body.first == "")
+    return res.json(m.msg(false, "First name is missing"));
+
+  if(!req.body.last || req.body.last == "")
+    return res.json(m.msg(false, "Last name is missing"));
+
+  if(!req.body.phone || req.body.phone == "")
+    return res.json(m.msg(false, "Phone number is missing"));
+
+  m.getUsers().updateOne({username: req.session_state.user.username}, {$set: {First: req.body.first, Last: req.body.last, Phone: req.body.phone}}, (err) => {
+    if(err) return m.errorCheck(err);
+    return res.json({redirect: "/account"});
   });
 
 });

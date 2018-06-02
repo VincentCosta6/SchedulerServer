@@ -30,7 +30,7 @@ router.use(require("./signin.js"));
 router.use(require("./session.js"));
 
 router.use(function(req, res) {
-  return res.sendFile(path.resolve(__dirname, "./Views/404.html"));
+  return res.sendFile(path.resolve(__dirname, "./Views/HTML/404.html"));
 });
 
 
