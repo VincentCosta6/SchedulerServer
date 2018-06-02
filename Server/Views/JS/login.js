@@ -9,7 +9,8 @@ $(document).ready(function() {
   $("#userStatus").toggle(false);
 
 
-  $("#userCheck").click( () => {
+  $("#userCheck").click( (e) => {
+    e.preventDefault();
     $("#status").toggle(false);
     $("#status").attr("src", "/images/loading.gif");
     $.get("/usernameTaken", {username: $("#signupUsername").val()}, (data) => {
@@ -27,8 +28,8 @@ $(document).ready(function() {
       }
     });
   });
-  $("#signup").click( () => {
-
+  $("#signup").click( (e) => {
+    e.preventDefault();
     var checkParams = function(Username, Password1, Password2, Email)
     {
       var problem = false;
@@ -61,8 +62,9 @@ $(document).ready(function() {
     });
   });
 
-  $("#login").click( () => {
-      $("#error3").toggle(false);
+  $("#login").click( (e) => {
+    e.preventDefault();
+    $("#error3").toggle(false);
     $.post("/login", {username: $("#signinUser").val(), password: $("#signinPass").val()}, (data) => {
       if(data.passed === false)
       {
@@ -70,7 +72,7 @@ $(document).ready(function() {
         $("#error3").html(data.reason);
       }
       else
-        $("body").replaceWith(data);
+        window.location = data.redirect;
     })
   });
 

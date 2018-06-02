@@ -94,7 +94,7 @@ router.post("/login", function(req, res) {
             user.sessionKeys.push(sessionKey);
             user.save( (err) => {
               if(err) return m.errorCheck(err);
-              return res.redirect("/session");
+              return res.json({redirect: "/session"});
             });
 
           }
@@ -107,7 +107,6 @@ router.post("/login", function(req, res) {
     else {
       return bcrypt.compare(req.body.password, user.password, (err, res2) => {
         if(err) return m.errorCheck(err);
-        console.log(user);
         if(res2 === true) {
           let user2 = {
             username: user.username,
@@ -123,7 +122,7 @@ router.post("/login", function(req, res) {
           user.save( (err) => {
             if(err) return m.errorCheck(err);
             console.log("Success login");
-            return res.redirect("/session");
+            return res.json({redirect: "/session"});
           });
         }
         else {
@@ -155,14 +154,11 @@ router.post("/signup", function(req, res) {
     req.session_state.key = m.getKey();
     req.session_state.active = true;
     req.session_state.sessionKey = sessionKey;
-    return res.redirect("/finish");
+    return res.json({redirect: "/finish"});
   });
 
 });
 
-router.post("/logout", function(req, res) {
-  req.session_state.reset();
-  return res.redirect("/login");
-});
+
 
 module.exports = router;
