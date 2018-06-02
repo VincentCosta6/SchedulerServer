@@ -11,8 +11,5 @@ for(let i in dirs)
     return res.sendFile(path.resolve(__dirname, viewHTML + dirs[i] + ".html"));
   });
 
-router.get("/session", function(req, res) {
-  res.json({status: "session"});
-});
 
 module.exports = router;

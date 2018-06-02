@@ -26,5 +26,9 @@ module.exports = {
   },
   getKey: function(){
     return key;
+  },
+  errorCheck: function(err) {
+    console.log(err);
+    return msg(false, "An error occured");
   }
 };

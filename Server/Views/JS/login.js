@@ -4,8 +4,11 @@ $('.message a').click(function(){
 $(document).ready(function() {
   $("#error1").toggle(false);
   $("#error2").toggle(false);
+  $("#error3").toggle(false);
   $("#status").toggle(false);
   $("#userStatus").toggle(false);
+
+
   $("#userCheck").click( () => {
     $("#status").toggle(false);
     $("#status").attr("src", "/images/loading.gif");
@@ -59,9 +62,13 @@ $(document).ready(function() {
   });
 
   $("#login").click( () => {
+      $("#error3").toggle(false);
     $.post("/login", {username: $("#signinUser").val(), password: $("#signinPass").val()}, (data) => {
       if(data.passed === false)
-        alert(data.reason);
+      {
+        $("#error3").toggle(true);
+        $("#error3").html(data.reason);
+      }
       else
         $("body").replaceWith(data);
     })

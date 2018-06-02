@@ -5,18 +5,61 @@ let express = require("express"),
     uuidv4 = require("uuidv4");
 let router = express.Router();
 let viewHTML = "Views/HTML/"
-let dirs = ["login", "signup", "resetAccount"];
 
 let users = m.getUsers();
 
-for(let i in dirs)
-  router.get("/" + dirs[i], function(req, res) {
-    return res.sendFile(path.resolve(__dirname, viewHTML + dirs[i] + ".html"));
-  });
+function handler2(req, res) {
+  if(!req.session_state || req.session_state.active === false || !req.session_state.user || !req.session_state.user.username)
+  {
+    req.session_state.reset();
+    return res.sendFile(path.resolve(__dirname, viewHTML + "login.html"));
+  }
+  else
+  {
+    m.getUsers().findOne({username: req.session_state.user.username}, (err, user) => {
+        if(err) return m.errorCheck(err);
+
+        let ip;
+        try{
+          ip = m.getIP(req);
+        } catch(err) {
+          console.log(err);
+          return res.sendFile(path.resolve(__dirname, viewHTML + "broken.html"));
+        }
+        let found = false;
+
+        for(let i in user.IPs)
+        {
+          if(ip === user.IPs[i])
+            found = true;
+        }
+        if(found === false) {
+          return res.sendFile(path.resolve(__dirname, viewHTML + "ipVerify.html"));
+        }
+        found = false;
+        for(let i in user.sessionKeys)
+        {
+          if(req.session_state.sessionKey === user.sessionKeys[i])
+            found = true;
+        }
+        if(!found) {
+          req.session_state.reset();
+          return res.sendFile(path.resolve(__dirname, viewHTML + "login.html"));
+        }
+        return res.sendFile(path.resolve(__dirname, viewHTML + "session.html"));
+    });
+  }
+}
+
+router.get("/", handler2);
+router.get("/login", handler2);
+router.get("/session", handler2);
+
+
 
 router.get("/usernameTaken", function(req, res) {
-  users.findOne({username: req.query.username}, (err, user) => {
-    if(err) console.log(err);
+  m.getUsers().findOne({username: req.query.username}, (err, user) => {
+    if(err) return m.errorCheck(err);
 
     if(!user) return res.json({taken: false});
     else return res.json({taken: true});
@@ -26,25 +69,62 @@ router.get("/usernameTaken", function(req, res) {
 router.post("/login", function(req, res) {
   //param checks
   m.getUsers().findOne({username: req.body.username}, (err, user) => {
-    if(err) {console.log(err); return res.json(m.msg(false, "An error occured"));}
+    if(err) return m.errorCheck(err);
 
     if(!user)
     {
+      m.getUsers().findOne({email: req.body.username}, (err, user) => {
+        if(err) return m.errorCheck(err);
 
+        if(!user) return res.json(m.msg(false, "Username or email not found"));
+
+        return bcrypt.compare(req.body.password, user.password, (err, res2) => {
+          if(err) return m.errorCheck(err);
+
+          if(res2 === true) {
+            req.session_state.user = {
+              username: user.username,
+              email: user.email,
+              permission: user.permission
+            };
+            req.session_state.key = m.getKey();
+            req.session_state.active = true;
+            let sessionKey = uuidv4();
+            req.session_state.sessionKey = sessionKey;
+            user.sessionKeys.push(sessionKey);
+            user.save( (err) => {
+              if(err) return m.errorCheck(err);
+              return res.redirect("/session");
+            });
+
+          }
+          else {
+            return res.json(m.msg(false, "Incorrect password!"));
+          }
+        });
+      });
     }
     else {
       return bcrypt.compare(req.body.password, user.password, (err, res2) => {
-        if(err) {console.log(err); return res.json(m.msg(false, "An error occured"));}
-
+        if(err) return m.errorCheck(err);
+        console.log(user);
         if(res2 === true) {
-          req.session_state.user = {
-            username: req.body.username,
-            email: req.body.email,
-            permission: "employee"
+          let user2 = {
+            username: user.username,
+            email: user.email,
+            permission: user.permission
           };
+          req.session_state.user = user2;
           req.session_state.key = m.getKey();
           req.session_state.active = true;
-          return res.redirect("/session");
+          let sessionKey = uuidv4();
+          req.session_state.sessionKey = sessionKey;
+          user.sessionKeys.push(sessionKey);
+          user.save( (err) => {
+            if(err) return m.errorCheck(err);
+            console.log("Success login");
+            return res.redirect("/session");
+          });
         }
         else {
           return res.json(m.msg(false, "Incorrect password!"));
@@ -57,26 +137,32 @@ router.post("/login", function(req, res) {
 
 router.post("/signup", function(req, res) {
   bcrypt.hash(req.body.password, m.getStandard(), function(err, hash) {
-
+    let sessionKey = uuidv4();
     let newUser = {
       username: req.body.username,
       email: req.body.email,
       password: hash,
       permission: "employee",
       IPs: [m.getIP(req)],
-      sessionKeys: [uuidv4()]
+      sessionKeys: [sessionKey]
     };
     m.getDB().collection("users").insert(newUser);
     req.session_state.user = {
       username: req.body.username,
       email: req.body.email,
-      permission: "employee"
+      permission: newUser.permission
     };
     req.session_state.key = m.getKey();
     req.session_state.active = true;
+    req.session_state.sessionKey = sessionKey;
     return res.redirect("/finish");
   });
 
+});
+
+router.post("/logout", function(req, res) {
+  req.session_state.reset();
+  return res.redirect("/login");
 });
 
 module.exports = router;
