@@ -97,6 +97,12 @@
 .check{
 
 }
+.Title {
+  color: white;
+  font-style: bold;
+  font-size: 55px;
+  text-align: center;
+}
 body {
   background: #76b852; /* fallback for old browsers */
   background: -webkit-linear-gradient(right, #5c72a8, #2a4faa);

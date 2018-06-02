@@ -135,27 +135,40 @@ router.post("/login", function(req, res) {
 });
 
 router.post("/signup", function(req, res) {
-  bcrypt.hash(req.body.password, m.getStandard(), function(err, hash) {
-    let sessionKey = uuidv4();
-    let newUser = {
-      username: req.body.username,
-      email: req.body.email,
-      password: hash,
-      permission: "employee",
-      IPs: [m.getIP(req)],
-      sessionKeys: [sessionKey]
-    };
-    m.getDB().collection("users").insert(newUser);
-    req.session_state.user = {
-      username: req.body.username,
-      email: req.body.email,
-      permission: newUser.permission
-    };
-    req.session_state.key = m.getKey();
-    req.session_state.active = true;
-    req.session_state.sessionKey = sessionKey;
-    return res.json({redirect: "/finish"});
-  });
+  if(req.body.password == "") return res.json(m.msg(false, "Password is invalid"));
+  if(req.body.password.length < 3) return res.json(m.msg(false, "Password must be at least 3 characters"));
+  m.getUsers().findOne({username: req.body.username}, (err, user) => {
+    if(err) return m.errorCheck(err);
+
+    if(!user)
+    {
+      bcrypt.hash(req.body.password, m.getStandard(), function(err, hash) {
+        let sessionKey = uuidv4();
+        let newUser = {
+          username: req.body.username,
+          email: req.body.email,
+          password: hash,
+          permission: "employee",
+          IPs: [m.getIP(req)],
+          sessionKeys: [sessionKey]
+        };
+        m.getDB().collection("users").insert(newUser);
+        req.session_state.user = {
+          username: req.body.username,
+          email: req.body.email,
+          permission: newUser.permission
+        };
+        req.session_state.key = m.getKey();
+        req.session_state.active = true;
+        req.session_state.sessionKey = sessionKey;
+        return res.json({redirect: "/finish"});
+      });
+    }
+    else {
+      return res.json(m.msg(false, "Username already exists"));
+    }
+  })
+
 
 });
 

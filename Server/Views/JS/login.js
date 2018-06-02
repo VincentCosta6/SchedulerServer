@@ -5,6 +5,7 @@ $(document).ready(function() {
   $("#error1").toggle(false);
   $("#error2").toggle(false);
   $("#error3").toggle(false);
+  $("#error4").toggle(false);
   $("#status").toggle(false);
   $("#userStatus").toggle(false);
 
@@ -30,6 +31,7 @@ $(document).ready(function() {
   });
   $("#signup").click( (e) => {
     e.preventDefault();
+    $("#error4").toggle(false);
     var checkParams = function(Username, Password1, Password2, Email)
     {
       var problem = false;
@@ -58,7 +60,13 @@ $(document).ready(function() {
 
 
     $.post("/signup", {username: $("#signupUsername").val(), email: $("#signupEmail").val(), password: $("#p1").val()}, (data) => {
-      $("body").replaceWith(data);
+      if(data.passed === false)
+      {
+        $("#error4").toggle(true);
+        $("#error4").html(data.reason);
+      }
+      else
+        window.location = data.redirect;
     });
   });
 
