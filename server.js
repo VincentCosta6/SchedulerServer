@@ -14,7 +14,8 @@ app.use(clientSessions({
   secret: "This is a special secret", // can be anything
   maxAge: 23457862344
 }));
-
+app.use("/css", express.static("./Server/Views/CSS"));
+app.use("/js", express.static("./Server/Views/JS"));
 app.use(routes);
 
 if(settings.https == true)

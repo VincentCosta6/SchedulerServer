@@ -1,8 +1,9 @@
 let express = require("express"),
-    path = require("path");
+    path = require("path"),
+    bcrypt = require("bcrypt");
 let router = express.Router();
-let viewHTML = "Views/"
-let dirs = ["login", "signup"];
+let viewHTML = "Views/HTML/"
+let dirs = ["login", "signup", "resetAccount"];
 
 for(let i in dirs)
   router.get("/" + dirs[i], function(req, res) {
@@ -10,8 +11,8 @@ for(let i in dirs)
   });
 
 
-router.get("/index", function(req, res) {
-  res.json({status: "signin"});
+router.post("/login", function(req, res) {
+
 });
 
 module.exports = router;
