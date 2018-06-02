@@ -18,7 +18,7 @@ function handler2(req, res) {
   {
     m.getUsers().findOne({username: req.session_state.user.username}, (err, user) => {
         if(err) return m.errorCheck(err);
-
+        if(!user) return res.sendFile(path.resolve(__dirname, viewHTML + "login.html"));
         let ip;
         try{
           ip = m.getIP(req);

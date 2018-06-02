@@ -4,6 +4,10 @@ let uri = "mongodb://127.0.0.1:27017";
 mongoose.connect(uri);
 let db = mongoose.connection;
 
+db.once("open", () => {
+  console.log("Connected to " + db.name + " database");
+});
+
 let key = require("../settings.json").keyVersion;
 
 let SALT_FACTOR = require("../settings.json").saltFactor;
