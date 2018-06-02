@@ -1,0 +1,9 @@
+module.exports = {
+  getIP: function(req) {
+    return (req.headers["x-forwarded-for"] || req.connection.remoteAddress || req.socket.remoteAddress ||
+     req.connection.socket.remoteAddress).split(",")[0];
+  },
+  msg: function(passed = false, reason = "Failed") {
+    return {passed: passed, reason, reason};
+  }
+};

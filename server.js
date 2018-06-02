@@ -15,7 +15,7 @@ app.use(clientSessions({
   maxAge: 23457862344
 }));
 
-//app.use(routes);
+app.use(routes);
 
 if(settings.https == true)
 {
