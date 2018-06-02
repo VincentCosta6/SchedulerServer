@@ -1,3 +1,12 @@
+let users = require("./Modules/Models/users.js");
+let mongoose = require("mongoose");
+let uri = "mongodb://127.0.0.1:27017";
+mongoose.connect(uri);
+let db = mongoose.connection;
+
+let key = require("../settings.json").keyVersion;
+
+let SALT_FACTOR = require("../settings.json").saltFactor;
 module.exports = {
   getIP: function(req) {
     return (req.headers["x-forwarded-for"] || req.connection.remoteAddress || req.socket.remoteAddress ||
@@ -5,5 +14,17 @@ module.exports = {
   },
   msg: function(passed = false, reason = "Failed") {
     return {passed: passed, reason, reason};
+  },
+  getDB: function() {
+    return db
+  },
+  getUsers: function() {
+    return users;
+  },
+  getStandard: function() {
+    return SALT_FACTOR;
+  },
+  getKey: function(){
+    return key;
   }
 };

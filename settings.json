@@ -4,5 +4,6 @@
   "https" : false,
   "httpsPort" : 80,
 
-  "keyVersion" : "0.0.1"
+  "keyVersion" : "0.0.1",
+  "saltFactor": 13
 }

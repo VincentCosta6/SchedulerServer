@@ -1,9 +1,12 @@
 let express = require("express"),
-    m = require("./methods.js");
+    m = require("./methods.js")
 let router = express.Router();
 let ipBanned = [];
 
 let sKey = require("../settings.json").keyVersion;
+
+let db = m.getDB();
+let users = m.getUsers();
 
 router.use(function(req, res, next) {
   for(let i in ipBanned)

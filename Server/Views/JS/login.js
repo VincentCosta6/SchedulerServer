@@ -4,10 +4,26 @@ $('.message a').click(function(){
 $(document).ready(function() {
   $("#error1").toggle(false);
   $("#error2").toggle(false);
-
-  $("#signup").click( () => {
-    
-  }
+  $("#status").toggle(false);
+  $("#userStatus").toggle(false);
+  $("#userCheck").click( () => {
+    $("#status").toggle(false);
+    $("#status").attr("src", "/images/loading.gif");
+    $.get("/usernameTaken", {username: $("#signupUsername").val()}, (data) => {
+      if(data.taken) {
+        $("#status").toggle(true);
+        $("#status").attr("src", "/images/redX.png");
+        $("#userStatus").toggle(true);
+        $("#userStatus").html("Username taken");
+      }
+      else if (!data.taken) {
+        $("#status").toggle(true);
+        $("#status").attr("src", "/images/checked.png");
+        $("#userStatus").toggle(true);
+        $("#userStatus").html("Username okay");
+      }
+    });
+  });
   $("#signup").click( () => {
 
     var checkParams = function(Username, Password1, Password2, Email)
@@ -37,8 +53,8 @@ $(document).ready(function() {
       return;
 
 
-    $.post("/signup", {}, (data) => {
-
+    $.post("/signup", {username: $("#signupUsername").val(), email: $("#signupEmail").val(), password: $("#p1").val()}, (data) => {
+      alert(data);
     });
   });
 
