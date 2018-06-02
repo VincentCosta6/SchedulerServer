@@ -1,0 +1,25 @@
+{
+  "name": "scheduler",
+  "version": "1.0.0",
+  "description": "Scheduling Service",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VincentCosta6/SchedulerServer"
+  },
+  "author": "Vincent Costa",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/VincentCosta6/SchedulerServer/issues"
+  },
+  "homepage": "https://github.com/VincentCosta6/SchedulerServer#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "client-sessions": "^0.8.0",
+    "express": "^4.16.3",
+    "http": "0.0.0"
+  }
+}
