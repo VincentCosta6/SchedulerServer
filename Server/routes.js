@@ -1,5 +1,6 @@
 let express = require("express"),
-    m = require("./methods.js")
+    m = require("./methods.js"),
+    path = require("path");
 let router = express.Router();
 let ipBanned = [];
 
@@ -18,8 +19,10 @@ router.use(function(req, res, next) {
 router.use(require("./signin.js"));
 
 router.use(function(req, res, next) {
-  if(!req.session_state || !req.session_state.user || req.session_state.key != sKey || req.session_state.active === false)
+  if(!req.session_state || !req.session_state.user || req.session_state.key != sKey || req.session_state.active === false) {
+    req.session_state.reset();
     return res.redirect("/login");
+  }
   else
     next();
 });

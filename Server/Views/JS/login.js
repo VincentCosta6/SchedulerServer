@@ -54,8 +54,17 @@ $(document).ready(function() {
 
 
     $.post("/signup", {username: $("#signupUsername").val(), email: $("#signupEmail").val(), password: $("#p1").val()}, (data) => {
-      alert(data);
+      $("body").replaceWith(data);
     });
+  });
+
+  $("#login").click( () => {
+    $.post("/login", {username: $("#signinUser").val(), password: $("#signinPass").val()}, (data) => {
+      if(data.passed === false)
+        alert(data.reason);
+      else
+        $("body").replaceWith(data);
+    })
   });
 
 

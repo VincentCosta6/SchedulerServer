@@ -24,6 +24,34 @@ router.get("/usernameTaken", function(req, res) {
 });
 
 router.post("/login", function(req, res) {
+  //param checks
+  m.getUsers().findOne({username: req.body.username}, (err, user) => {
+    if(err) {console.log(err); return res.json(m.msg(false, "An error occured"));}
+
+    if(!user)
+    {
+
+    }
+    else {
+      return bcrypt.compare(req.body.password, user.password, (err, res2) => {
+        if(err) {console.log(err); return res.json(m.msg(false, "An error occured"));}
+
+        if(res2 === true) {
+          req.session_state.user = {
+            username: req.body.username,
+            email: req.body.email,
+            permission: "employee"
+          };
+          req.session_state.key = m.getKey();
+          req.session_state.active = true;
+          return res.redirect("/session");
+        }
+        else {
+          return res.json(m.msg(false, "Incorrect password!"));
+        }
+      });
+    }
+  });
 
 });
 
