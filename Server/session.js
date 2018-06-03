@@ -29,7 +29,7 @@ router.get("/accountInfo", function(req, res) {
 });
 
 router.post("/logout", function(req, res) {
-  m.getUsers().updateOne({username: req.session_state.user.username}, {$pull: {sessionKeys: req.session_state.sessionKey}}, (err) => {
+  m.getUsers().updateOne({username: req.session_state.user.username}, {$set: {sessionKeys: []]}}, (err) => {
     if(err) return m.errorCheck(err);
     req.session_state.reset();
     return res.json({redirect: "/login"});
