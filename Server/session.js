@@ -25,11 +25,11 @@ router.get("/accountInfo", function(req, res) {
       permission: user.permission
     };
     return res.json({user: ret});
-  })
+  });
 });
 
 router.post("/logout", function(req, res) {
-  m.getUsers().updateOne({username: req.session_state.user.username}, {$set: {sessionKeys: []]}}, (err) => {
+  m.getUsers().updateOne({username: req.session_state.user.username}, {$set: {sessionKeys: []}}, (err) => {
     if(err) return m.errorCheck(err);
     req.session_state.reset();
     return res.json({redirect: "/login"});
