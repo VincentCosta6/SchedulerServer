@@ -31,7 +31,10 @@ function handler2(req, res) {
         for(let i in user.IPs)
         {
           if(ip === user.IPs[i])
+          {
             found = true;
+            break;
+          }
         }
         if(found === false) {
           return res.sendFile(path.resolve(__dirname, viewHTML + "ipVerify.html"));
@@ -40,7 +43,10 @@ function handler2(req, res) {
         for(let i in user.sessionKeys)
         {
           if(req.session_state.sessionKey === user.sessionKeys[i])
+          {
             found = true;
+            break;
+          }
         }
         if(!found) {
           req.session_state.reset();
