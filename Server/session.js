@@ -36,6 +36,24 @@ router.get("/redir", function(req, res) {
     return res.json(m.msg(false, "Incorrect tile"));
 });
 
+let cTile = require("./Modules/Tiles/customerTiles");
+let eTile = require("./Modules/Tiles/employeeTiles");
+let mTile = require("./Modules/Tiles/managerTiles");
+
+router.get("/tileSpace", function(req, res) {
+  let perm = req.session_state.user.permission;
+  switch(perm) {
+    case "customer": 
+      return res.json({tiles: cTile});
+    case "employee":
+      return res.json({tiles: eTile});
+    case "manager": 
+      return res.json({tiles: mTile});
+    default:
+      return res.json(m.msg(false, "Could not find your permission"));
+  }
+});
+
 router.post("/logout", function(req, res) {
   m.getUsers().updateOne({username: req.session_state.user.username}, {$set: {sessionKeys: []}}, (err) => {
     if(err) return m.errorCheck(err);
