@@ -28,6 +28,14 @@ router.get("/accountInfo", function(req, res) {
   });
 });
 
+router.get("/redir", function(req, res) {
+  console.log(req.query.which);
+  if(req.query.which == "Messages")
+    return res.redirect("/messages");
+  else
+    return res.json(m.msg(false, "Incorrect tile"));
+});
+
 router.post("/logout", function(req, res) {
   m.getUsers().updateOne({username: req.session_state.user.username}, {$set: {sessionKeys: []}}, (err) => {
     if(err) return m.errorCheck(err);
@@ -36,6 +44,7 @@ router.post("/logout", function(req, res) {
   });
 
 });
+
 
 router.post("/finishAccount", function(req, res) {
   if(!req.body.first || req.body.first == "")

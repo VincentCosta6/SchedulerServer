@@ -9,7 +9,6 @@ let viewHTML = "Views/HTML/";
 let users = m.getUsers();
 
 function handler2(req, res) {
-  console.log("Handling...");
   if(!req.session_state || req.session_state.active === false || !req.session_state.user || !req.session_state.user.username)
   {
     req.session_state.reset();
@@ -17,7 +16,6 @@ function handler2(req, res) {
   }
   else
   {
-    console.log("Found...");
     m.getUsers().findOne({username: req.session_state.user.username}, (err, user) => {
         if(err) return m.errorCheck(err);
         if(!user) return res.sendFile(path.resolve(__dirname, viewHTML + "login.html"));
@@ -43,6 +41,7 @@ function handler2(req, res) {
           return res.sendFile(path.resolve(__dirname, viewHTML + "ipVerify.html"));
         }
         found = false;*/
+        let found = false;
         for(let i in user.sessionKeys)
         {
           if(req.session_state.sessionKey === user.sessionKeys[i])
