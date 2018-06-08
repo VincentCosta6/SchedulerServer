@@ -31,7 +31,7 @@ router.use(function(req, res, next) {
 
 router.use(require("./session.js"));
 
-router.use(function(req, res, next) {
+/*router.use(function(req, res, next) {
   m.getUsers().findOne({username: req.session_state.user.username}, (err, user) => {
     if(err) return m.errorCheck(err);
 
@@ -66,7 +66,7 @@ router.use(function(req, res, next) {
     else
       return res.json(m.msg(false, "Insufficient permission"));
   });
-});
+});*/
 //router.use(require("./manager.js"));
 
 router.use(function(req, res) {

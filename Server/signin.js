@@ -4,11 +4,12 @@ let express = require("express"),
     m = require("./methods.js"),
     uuidv4 = require("uuidv4");
 let router = express.Router();
-let viewHTML = "Views/HTML/"
+let viewHTML = "Views/HTML/";
 
 let users = m.getUsers();
 
 function handler2(req, res) {
+  console.log("Handling...");
   if(!req.session_state || req.session_state.active === false || !req.session_state.user || !req.session_state.user.username)
   {
     req.session_state.reset();
@@ -16,12 +17,14 @@ function handler2(req, res) {
   }
   else
   {
+    console.log("Found...");
     m.getUsers().findOne({username: req.session_state.user.username}, (err, user) => {
         if(err) return m.errorCheck(err);
         if(!user) return res.sendFile(path.resolve(__dirname, viewHTML + "login.html"));
-        let ip;
+        /*let ip;
         try{
           ip = m.getIP(req);
+          console.log(ip);
         } catch(err) {
           console.log(err);
           return res.sendFile(path.resolve(__dirname, viewHTML + "broken.html"));
@@ -39,7 +42,7 @@ function handler2(req, res) {
         if(found === false) {
           return res.sendFile(path.resolve(__dirname, viewHTML + "ipVerify.html"));
         }
-        found = false;
+        found = false;*/
         for(let i in user.sessionKeys)
         {
           if(req.session_state.sessionKey === user.sessionKeys[i])
@@ -49,6 +52,7 @@ function handler2(req, res) {
           }
         }
         if(!found) {
+          
           req.session_state.reset();
           return res.sendFile(path.resolve(__dirname, viewHTML + "login.html"));
         }
