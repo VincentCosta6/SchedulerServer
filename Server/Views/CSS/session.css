@@ -8,6 +8,7 @@
     padding: 25px 25px 25px 25px;
     justify-content: center;
     margin: 25px 25px 25px 25px;
+    min-width: 300px;
 }
 .tile {
     background-color: grey;
