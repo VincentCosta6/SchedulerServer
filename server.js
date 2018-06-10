@@ -22,8 +22,10 @@ app.use(routes);
 
 if(settings.https == true)
 {
-
+  let https = require("https");
+  https.createServer(app).listen(80);
+  console.log("Https initialized on port " + 80);
 }
 
 http.createServer(app).listen(settings.httpPort);
-console.log("Server initialized on port " + settings.httpPort);
+console.log("Http Server initialized on port " + settings.httpPort);
